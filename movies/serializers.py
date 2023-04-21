@@ -3,12 +3,10 @@ from .models import Actor, Movie, Review
 
 
 class ActorMovieSerializer(serializers.ModelSerializer):
-    # review_set = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
         fields = ('title', )
-        # fields = '__all__'
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -33,14 +31,10 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class MovieListSerializer(serializers.ModelSerializer):
-    # review_set = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Movie
         fields = ('title', 'overview')
-        # fields = '__all__'
-
-
 
 
 class ActorListSerializer(serializers.ModelSerializer):
@@ -48,3 +42,17 @@ class ActorListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
         fields = ('id', 'name')
+
+
+class ReviewListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Review
+        fields = ('title', 'content')
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    movie = serializers.StringRelatedField()    
+    class Meta:
+        model = Review
+        fields = ('id', 'movie', 'title', 'content', )
