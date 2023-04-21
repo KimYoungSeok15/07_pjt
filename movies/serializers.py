@@ -2,23 +2,49 @@ from rest_framework import serializers
 from .models import Actor, Movie, Review
 
 
+class ActorMovieSerializer(serializers.ModelSerializer):
+    # review_set = ReviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Movie
+        fields = ('title', )
+        # fields = '__all__'
+
+
 class ActorSerializer(serializers.ModelSerializer):
+    movie_set = ActorMovieSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Actor
-        fields = '__all__'
+        fields = ['id', 'name', 'movie_title']
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['movies'] = rep.pop('movie_set', [])
+        return rep
 
 
-# class ArticleListSerializer(serializers.ModelSerializer):
-#     # comment_set = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-#     comment_set = CommentSerializer(many=True, read_only=True)
+class MovieSerializer(serializers.ModelSerializer):
+    actors = serializers.StringRelatedField(many=True)
 
-#     class Meta:
-#         model = Article
-#         # fields = ('id', 'title', 'content')
-#         fields = '__all__'
+    class Meta:
+        model = Movie
+        fields = ['id', 'title', 'overview', 'release_date', 'poster_path', 'actors']
 
 
-#     def to_representation(self, instance):
-#         rep = super().to_representation(instance)
-#         rep['comments'] = rep.pop('comment_set', [])
-#         return rep
+class MovieListSerializer(serializers.ModelSerializer):
+    # review_set = ReviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Movie
+        fields = ('title', 'overview')
+        # fields = '__all__'
+
+
+
+
+class ActorListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Actor
+        fields = ('id', 'name')
